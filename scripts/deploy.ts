@@ -14,7 +14,7 @@ async function main() {
   console.log("Deploying contracts with the account:", deployer.address);
 
   const AuditTrail = await hre.ethers.getContractFactory("AuditTrail");
-  const auditTrail = await AuditTrail.deploy();
+  const auditTrail = await AuditTrail.deploy("string","string","address","address");
 
   await auditTrail.deployed();
 
