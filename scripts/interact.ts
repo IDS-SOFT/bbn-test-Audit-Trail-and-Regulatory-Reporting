@@ -1,29 +1,31 @@
 import dotenv from "dotenv";
-dotenv.config(); // Load environment variables from .env file
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 const hre = require("hardhat");
-const auditTrailJSON = require("./../artifacts/contracts/AuditTrailandRegulatoryReporting.sol/AuditTrail.json");
 
+dotenv.config(); // Load environment variables from .env file
+const provider = new ethers.providers.JsonRpcProvider();
 const contractAddress: string = process.env.CONTRACT_ADDRESS || "";
-const contractABI: any[] = auditTrailJSON.abi;
+if (!contractAddress) {
+  console.error("Please set your CONTRACT_ADDRESS in the .env file");
+  process.exit(1);
+}
+const RPC_NODE_URL: string = process.env.RPC_NODE_URL || "";
+
+const ContinuousAudits = require("./../artifacts/contracts/AuditTrailandRegulatoryReporting.sol/AuditTrail.json");
+const contractABI: any[] = ContinuousAudits.abi;
 
 async function main() {
-  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_NODE_URL || "");
-  const signer = await hre.ethers.getSigner();
+  const provider = new providers.JsonRpcProvider(RPC_NODE_URL);  
+  const signer = await hre.ethers.getSigner("address");
   const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
   try {
-    // Call functions here
-    const createproduct = await contract.updateDocumentHash("ABc");
-  await createproduct.wait();
-  console.log("product created");
-  console.log("The transaction hash is:", createproduct.hash);
-  const receipt = await createproduct.wait();
-  console.log(
-    "The transaction returned the following transaction receipt:\n",
-    receipt,
-  );
-   
+    const createContract = await contract.updateDocumentHash("nik");
+    await createContract.wait();
+    console.log("product created");
+    console.log("The transaction hash is:", createContract.hash);
+    const receipt = await createContract.wait();
+    console.log("The transaction returned the following transaction receipt:\n", receipt);
   } catch (error) {
     console.error("Error:", error);
   }
