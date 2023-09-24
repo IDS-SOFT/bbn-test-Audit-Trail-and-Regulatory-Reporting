@@ -20,7 +20,7 @@ async function main() {
   const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
   try {
-    const createContract = await contract.updateDocumentHash("nik");
+    const createContract = await contract.updateDocumentHash("");
     await createContract.wait();
     console.log("product created");
     console.log("The transaction hash is:", createContract.hash);
